@@ -118,3 +118,41 @@ S3
  -x,--createExport            Create HBase snapshot AND export to S3
 
 ```
+
+Required HDFS core-site.xml 
+```
+<!-- Amazon S3 -->
+<property>
+    <name>fs.s3.awsAccessKeyId</name>
+    <value>key</value>
+</property>
+<property>
+    <name>fs.s3.awsSecretAccessKey</name>
+    <value>secret</value>
+</property>
+<!-- Amazon S3N -->
+<property>
+  <name>fs.s3.impl</name>
+  <value>org.apache.hadoop.fs.s3.S3FileSystem</value>
+</property>
+<property>
+  <name>fs.s3n.impl</name>
+  <value>org.apache.hadoop.fs.s3native.NativeS3FileSystem</value>
+</property>
+<property>
+  <name>fs.AbstractFileSystem.s3.impl</name>
+  <value>org.apache.hadoop.fs.s3.S3FileSystem</value>
+</property>
+<property>
+  <name>fs.AbstractFileSystem.s3n.impl</name>
+  <value>org.apache.hadoop.fs.s3native.NativeS3FileSystem</value>
+</property>
+<property>
+    <name>fs.s3n.awsAccessKeyId</name>
+    <value>key</value>
+</property>
+<property>
+    <name>fs.s3n.awsSecretAccessKey</name>
+    <value>secret</value>
+</property>
+```
