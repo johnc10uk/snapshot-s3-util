@@ -119,7 +119,8 @@ S3
 
 ```
 
-Required HDFS core-site.xml 
+#Required HDFS core-site.xml 
+
 ```
 <!-- Amazon S3 -->
 <property>
