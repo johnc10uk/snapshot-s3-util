@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+   <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.imgur.backup</groupId>
     <artifactId>snapshot-s3-util</artifactId>
-    <version>1.0.0</version>
+    <version>2.0.0</version>
     <packaging>jar</packaging>
 
     <name>snapshot-s3-util</name>
@@ -19,28 +19,19 @@
     </licenses>
 
     <properties>
-        <hbaseVersion>0.94.6-cdh4.3.0</hbaseVersion>
-        <hadoopHdfsVersion>2.0.0-cdh4.3.0</hadoopHdfsVersion>
-        <hadoopCommonVersion>2.0.0-cdh4.3.0</hadoopCommonVersion>
-        <hadoopCoreVersion>2.0.0-mr1-cdh4.3.0</hadoopCoreVersion>
-        <awsVersion>1.5.4</awsVersion>
-        <slf4jVersion>1.6.1</slf4jVersion>
-        <mrunitVersion>0.9.0-incubating</mrunitVersion>
+        <hbaseVersion>0.98.1-cdh5.1.0</hbaseVersion>
+        <hadoopHdfsVersion>2.3.0-cdh5.1.0</hadoopHdfsVersion>
+        <hadoopCommonVersion>2.3.0-cdh5.1.0</hadoopCommonVersion>
+        <hadoopCoreVersion>2.3.0-cdh5.1.0</hadoopCoreVersion>
+<!--        <awsVersion>1.5.4</awsVersion> -->
+        <slf4jVersion>1.7.7</slf4jVersion>
+<!--        <mrunitVersion>1.1.0</mrunitVersion> -->
     </properties>
 
     <repositories>
         <repository>
-            <id>java.net</id>
-            <url>http://download.java.net/maven/2</url>
-            <name>java.net Maven Repository</name>
-        </repository>
-        <repository>
-            <id>cdh.release.repo</id>
-            <url>https://repository.cloudera.com/content/repositories/releases</url>
-            <name>Cloudera Releases Repository</name>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
+            <id>cloudera</id>
+            <url>https://repository.cloudera.com/artifactory/cloudera-repos/</url>
         </repository>
         <repository>
             <id>oss.sonatype.org</id>
@@ -113,48 +104,29 @@
 
         <dependency>
             <groupId>org.apache.hadoop</groupId>
-            <artifactId>hadoop-core</artifactId>
-            <version>${hadoopCoreVersion}</version>
+            <artifactId>hadoop-hdfs</artifactId>
+            <version>${hadoopHdfsVersion}</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.apache.hbase</groupId>
+            <artifactId>hbase-client</artifactId>
+            <version>${hbaseVersion}</version>
+        </dependency>
         <dependency>
             <groupId>org.apache.hadoop</groupId>
-            <artifactId>hadoop-hdfs</artifactId>
+            <artifactId>hadoop-yarn-client</artifactId>
+            <version>${hadoopHdfsVersion}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-yarn-common</artifactId>
             <version>${hadoopHdfsVersion}</version>
         </dependency>
 
         <!-- For unit testing -->
         <dependency>
             <groupId>org.apache.hbase</groupId>
-            <artifactId>hbase</artifactId>
-            <version>${hbaseVersion}</version>
-            <type>test-jar</type>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.hadoop</groupId>
-            <artifactId>hadoop-common</artifactId>
-            <version>${hadoopCommonVersion}</version>
-            <type>test-jar</type>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.hadoop</groupId>
-            <artifactId>hadoop-hdfs</artifactId>
-            <version>${hadoopHdfsVersion}</version>
-            <type>test-jar</type>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.hadoop</groupId>
-            <artifactId>hadoop-test</artifactId>
-            <version>${hadoopCoreVersion}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.hbase</groupId>
-            <artifactId>hbase</artifactId>
+            <artifactId>hbase-server</artifactId>
             <version>${hbaseVersion}</version>
             <exclusions>
                   <exclusion>
@@ -239,13 +211,13 @@
             <version>${slf4jVersion}</version>
         </dependency>
 
-        <dependency>
+<!--        <dependency>
             <groupId>org.apache.mrunit</groupId>
             <artifactId>mrunit</artifactId>
             <version>${mrunitVersion}</version>
             <classifier>hadoop2</classifier>
             <scope>test</scope>
-        </dependency>
+        </dependency>-->
     </dependencies>
 
     <build>

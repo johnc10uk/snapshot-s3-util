@@ -60,6 +60,7 @@ public class SnapshotS3Util extends Configured implements Tool
     private String snapshotName = null;
     private String tableName    = null;
     private String hdfsPath     = "/hbase";
+    private String snapshotfromUrl = "hdfs://nameservice1/hbase";
     private long mappers        = 1;
     private long snapshotTtl    = 0;
     
@@ -182,6 +183,7 @@ public class SnapshotS3Util extends Configured implements Tool
         LOG.info("Bucket name     : {}", bucketName);
         LOG.info("S3 Path         : {}", s3Path);
         LOG.info("HDFS Path       : {}", hdfsPath);
+        LOG.info("Snapshot From Url : {}", snapshotfromUrl);
         LOG.info("Mappers         : {}", mappers);
         LOG.info("s3 protocol     : {}", s3protocol);
         LOG.info("Snapshot TTL    : {}", snapshotTtl);
@@ -228,8 +230,10 @@ public class SnapshotS3Util extends Configured implements Tool
         String[] args = {
             "-snapshot",
             snapshotName,
+            "-copy-from",
+            snapshotfromUrl,
             "-copy-to",
-            url,
+            url, 
             "-mappers",
             Long.toString(mappers)
         };
@@ -256,6 +260,7 @@ public class SnapshotS3Util extends Configured implements Tool
             //Configuration config = HBaseConfiguration.create();
             Configuration config = new Configuration();
             String s3Url = getS3Url(true);
+            //String s3Url = getS3Url(false);
             String hdfsUrl = config.get("fs.defaultFS");
             
             if (hdfsUrl == null) {
@@ -277,8 +282,8 @@ public class SnapshotS3Util extends Configured implements Tool
             };
 
             // Override dfs configuration to point to S3
-            config.set("fs.default.name", s3protocol + accessKey + ":" + accessSecret + "@" + bucketName);
-            config.set("fs.defaultFS", s3protocol + accessKey + ":" + accessSecret  + "@" + bucketName);
+//            config.set("fs.default.name", s3protocol + accessKey + ":" + accessSecret + "@" + bucketName);
+//            config.set("fs.defaultFS", s3protocol + accessKey + ":" + accessSecret  + "@" + bucketName);
             config.set("fs.s3.awsAccessKeyId", accessKey);
             config.set("fs.s3.awsSecretAccessKey", accessSecret);
             config.set("hbase.tmp.dir", "/tmp/hbase-${user.name}");
@@ -308,6 +313,17 @@ public class SnapshotS3Util extends Configured implements Tool
      * @return the URL "s3://..."
      */
     private String getS3Url(boolean withCredentials) {
+        if (withCredentials) {
+            return s3protocol + accessKey + ":" + accessSecret + "@" + bucketName + s3Path;
+        }
+        
+        return s3protocol + bucketName + s3Path;
+    }
+    /**
+     * Get the snapshot directory path in S3
+     * @return the URL "s3://..."
+     */
+    private String getS3ImportUrl(boolean withCredentials) {
         if (withCredentials) {
             return s3protocol + accessKey + ":" + accessSecret + "@" + bucketName + s3Path;
         }
@@ -374,6 +390,9 @@ public class SnapshotS3Util extends Configured implements Tool
             case 'd':
                 hdfsPath = option.getValue();
                 break;
+            case 'f':
+                snapshotfromUrl = option.getValue();
+                break;
             case 'm':
                 mappers = Long.parseLong(option.getValue());
                 break;
@@ -424,7 +443,9 @@ public class SnapshotS3Util extends Configured implements Tool
         Option s3Path = new Option("p", "s3Path", true,
             "The snapshot directory in S3. Default is '/hbase'");
         Option hdfsPath = new Option("d", "hdfsPath", true,
-            "The snapshot directory in HDFS. Default is '/hbase'");
+            "The main directory in HDFS. Default is '/hbase'");
+        Option snapshotfromUrl = new Option("f", "snapshotfromUrl", true,
+            "The snapshot directory Url. Default is 'hdfs:://nameservice1/hbase'");
         Option mappers = new Option("m", "mappers", true,
             "The number of parallel copiers if copying to/from S3. Default: 1");
         Option useS3n = new Option("a", "s3n", false,
@@ -439,6 +460,7 @@ public class SnapshotS3Util extends Configured implements Tool
         bucketName.setRequired(true);
         s3Path.setRequired(false);
         hdfsPath.setRequired(false);
+        snapshotfromUrl.setRequired(false);
         mappers.setRequired(false);
         useS3n.setRequired(false);
         snapshotTtl.setRequired(false);
@@ -468,6 +490,7 @@ public class SnapshotS3Util extends Configured implements Tool
         options.addOption(bucketName);
         options.addOption(s3Path);
         options.addOption(hdfsPath);
+        options.addOption(snapshotfromUrl);
         options.addOption(mappers);
         options.addOption(useS3n);
         options.addOption(snapshotTtl);
