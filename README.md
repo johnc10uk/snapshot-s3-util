@@ -4,7 +4,9 @@ Compiled against CDH 5.1 using YARN (MR2) Aug 2014
 Version 2.0.0
 Added a copy-from option for export
 Test export to s3 and s3n storage
-Import will currently only work from s3n (5GB file size limit)
+Import will currently only work from s3n, now default (5GB file size limit)
+Option to use fs.s3n.multipart.uploads.enabled to allow greater than 5GB HDFS files to S3n store (core-site.xml and jets3t.properties to increase threads from default of 2 to say 20)
+s3 import fails as using s3 directory /data/default and doesn't try /.tmp or /archive as seen earlier in debug output. Files are in /rootpath/archive/data/default and I cannot find how to override this setting. Error is java.io.IOException: No such file.
 
 # Building
 ```
@@ -90,16 +92,16 @@ usage: BackupUtil [-a] -b <arg> -c | -e | -f <arg> | -i | -x [-d <arg>]   -k <ar
        [-l <arg>] [-m <arg>] [-n <arg>] [-p <arg>] -s <arg> [-t <arg>]
 Backup utility for creating snapshots and exporting/importing to and from
 S3
- -a,--s3n                     Use s3n protocol instead of s3. Might work
-                              better, but beware of 5GB file limit imposed
-                              by S3
+ -a,--s3                      Use s3 protocol instead of s3n. Currently not
+                              working for s3 (file import path issue)
+                              
  -b,--bucketName <arg>        The S3 bucket name where snapshots are
                               stored
  -c,--create                  Create HBase snapshot
  -d,--hdfsPath <arg>          The snapshot directory in HDFS. Default is
                               '/hbase'
  -e,--export                  Export HBase snapshot to S3
- -f,--copy-from <arg>         Export from snapshot directory. Default is 
+ -f,--copy-from <arg>         Export from snapshot URL. Default is 
                               hdfs://nameservice1/hbase
  -i,--import                  Import HBase snapshot from S3. May need to
                               run as hbase user if importing into HBase
@@ -119,7 +121,7 @@ S3
 
 ```
 
-#Required HDFS core-site.xml 
+##Required HDFS core-site.xml 
 
 ```
 <!-- Amazon S3 -->
@@ -156,4 +158,29 @@ S3
     <name>fs.s3n.awsSecretAccessKey</name>
     <value>secret</value>
 </property>
+<property>
+    <name>fs.s3n.multipart.uploads.enabled</name>
+    <value>true</value>
+</property>
+<property>
+    <name>fs.s3n.multipart.uploads.block.size</name>
+    <value>67108864</value>
+</property>
+<property>
+    <name>fs.s3n.multipart.copy.block.size</name>
+    <value>5368709120</value>
+</property>
+```
+
+##Required jets3t.properties
+
+Create a /etc/hadoop/conf/jets3t.properties file on the HBase gateway nodes (where you run this s3 util from) with or similar to:
+
+```
+storage-service.internal-error-retry-max=5
+storage-service.disable-live-md5=false
+threaded-service.max-thread-count=20
+threaded-service.admin-max-thread-count=20
+s3service.max-thread-count=20
+s3service.admin-max-thread-count=20
 ```

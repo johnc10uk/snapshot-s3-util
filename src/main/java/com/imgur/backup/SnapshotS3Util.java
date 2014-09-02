@@ -69,7 +69,7 @@ public class SnapshotS3Util extends Configured implements Tool
     private String accessSecret = null;
     private String bucketName   = null;
     private String s3Path       = "/hbase";
-    private String s3protocol   = S3_PROTOCOL;
+    private String s3protocol   = S3N_PROTOCOL;
 
     /**
      * Init and run job
@@ -397,7 +397,7 @@ public class SnapshotS3Util extends Configured implements Tool
                 mappers = Long.parseLong(option.getValue());
                 break;
             case 'a':
-                s3protocol = S3N_PROTOCOL;
+                s3protocol = S3_PROTOCOL;
                 break;
             case 'l':
                 snapshotTtl = Long.parseLong(option.getValue());
@@ -448,8 +448,8 @@ public class SnapshotS3Util extends Configured implements Tool
             "The snapshot directory Url. Default is 'hdfs:://nameservice1/hbase'");
         Option mappers = new Option("m", "mappers", true,
             "The number of parallel copiers if copying to/from S3. Default: 1");
-        Option useS3n = new Option("a", "s3n", false,
-            "Use s3n protocol instead of s3. Might work better, but beware of 5GB file limit imposed by S3");
+        Option useS3 = new Option("a", "s3", true,
+            "Use s3 protocol (currently not working for import)");
         Option snapshotTtl = new Option("l", "snapshotTtl", true,
             "Delete snapshots older than this value (seconds) from running HBase cluster");
         
@@ -462,7 +462,7 @@ public class SnapshotS3Util extends Configured implements Tool
         hdfsPath.setRequired(false);
         snapshotfromUrl.setRequired(false);
         mappers.setRequired(false);
-        useS3n.setRequired(false);
+        useS3.setRequired(false);
         snapshotTtl.setRequired(false);
         
         Option createSnapshot = new Option("c", "create", false,
@@ -492,7 +492,7 @@ public class SnapshotS3Util extends Configured implements Tool
         options.addOption(hdfsPath);
         options.addOption(snapshotfromUrl);
         options.addOption(mappers);
-        options.addOption(useS3n);
+        options.addOption(useS3);
         options.addOption(snapshotTtl);
 
         return options;
