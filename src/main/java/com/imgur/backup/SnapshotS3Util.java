@@ -448,7 +448,7 @@ public class SnapshotS3Util extends Configured implements Tool
             "The snapshot directory Url. Default is 'hdfs:://nameservice1/hbase'");
         Option mappers = new Option("m", "mappers", true,
             "The number of parallel copiers if copying to/from S3. Default: 1");
-        Option useS3 = new Option("a", "s3", true,
+        Option useS3 = new Option("a", "s3", false,
             "Use s3 protocol (currently not working for import)");
         Option snapshotTtl = new Option("l", "snapshotTtl", true,
             "Delete snapshots older than this value (seconds) from running HBase cluster");
