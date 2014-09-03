@@ -22,7 +22,7 @@ Note: hbase user shell may be set to /bin/false, set to /bin/bash.
 ```
 grep /etc/passwd hbase
  hbase:x:985:984:HBase:/var/run/hbase:/bin/bash
-sudo -u hbase HADOOP_CLASSPATH=$(hbase classpath) hadoop jar target/snapshot-s3-util-2.0.0.jar com.imgur.backup.SnapshotS3Util --createExport --table test5 --s3n --awsAccessKey <accessKey> --awsAccessSecret <accessSecret> --bucketName <bucketName> --mappers <numMaps>
+sudo -u hbase HADOOP_CLASSPATH=$(hbase classpath) hadoop jar target/snapshot-s3-util-2.0.0.jar com.imgur.backup.SnapshotS3Util --createExport --table test5 --awsAccessKey <accessKey> --awsAccessSecret <accessSecret> --bucketName <bucketName> --mappers <numMaps>
 ```
 Output
 ```
@@ -93,8 +93,7 @@ usage: BackupUtil [-a] -b <arg> -c | -e | -f <arg> | -i | -x [-d <arg>]   -k <ar
 Backup utility for creating snapshots and exporting/importing to and from
 S3
  -a,--s3                      Use s3 protocol instead of s3n. Currently not
-                              working for s3 (file import path issue)
-                              
+                              working for s3 import (file import path issue)                           
  -b,--bucketName <arg>        The S3 bucket name where snapshots are
                               stored
  -c,--create                  Create HBase snapshot
