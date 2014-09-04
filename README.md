@@ -1,10 +1,10 @@
 # Updates to the CDH4 version
 
-Compiled against CDH 5.1 using YARN (MR2) Aug 2014
-Version 2.0.0
+Compiled against CDH 5.1.2 using YARN (MR2) September 2014
+Version 2.0.1
 Added a copy-from option for export
 Test export to s3 and s3n storage
-Import will currently only work from s3n, now default (5GB file size limit unless use multipart file feature)
+Import will currently only work from s3n, now default (5GB file size limit unless use multipart file feature which allows 5TB file sizes)
 Option to use fs.s3n.multipart.uploads.enabled to allow greater than 5GB HDFS files to S3n store (core-site.xml and jets3t.properties to increase threads from default of 2 to say 20)
 s3 import fails as using s3 directory /data/default and doesn't try /.tmp or /archive as seen earlier in debug output. Files are in /rootpath/archive/data/default and I cannot find how to override this setting. Error is java.io.IOException: No such file.
 
@@ -54,7 +54,15 @@ delete_snapshot 'test1-snapshot-20140828_154448'
 scan 'test1'
 exit
 
-sudo -u hbase HADOOP_CLASSPATH=$(hbase classpath) hadoop jar target/snapshot-s3-util-2.0.0.jar com.imgur.backup.SnapshotS3Util --import --snapshot test1-snapshot-20140828_154448 -d /hbase -p /hbase -a true --awsAccessKey <accessKey> --awsAccessSecret <accessSecret> --bucketName <bucketName> --mappers <numMaps>
+Ensure hbase user can write to HDFS /user
+
+sudo -u hdfs hadoop fs -chmod 777 /user
+
+Import snapshot from s3n store directory /hbase (-p) to HDFS /hbase (-d)
+
+sudo -u hbase HADOOP_CLASSPATH=$(hbase classpath) hadoop jar target/snapshot-s3-util-2.0.0.jar com.imgur.backup.SnapshotS3Util --import --snapshot test1-snapshot-20140828_154448 -d /hbase -p /hbase --awsAccessKey <accessKey> --awsAccessSecret <accessSecret> --bucketName <bucketName> --mappers <numMaps>
+
+Confirm table can be restored
 
 hbase shell
 disable 'test1'
@@ -173,7 +181,8 @@ S3
 
 ##Required jets3t.properties
 
-Create a /etc/hadoop/conf/jets3t.properties file on the HBase gateway nodes (where you run this s3 util from) with or similar to:
+Create a ~/jets3t.properties file on the HBase gateway nodes (where you run this s3 util from)
+Copy to /etc/hadoop/conf
 
 ```
 storage-service.internal-error-retry-max=5
@@ -183,3 +192,6 @@ threaded-service.admin-max-thread-count=20
 s3service.max-thread-count=20
 s3service.admin-max-thread-count=20
 ```
+
+Note this file will be removed from /etc/hadoop/conf when Cloudera deploy client config is run so will
+need to copy back before running the backup script

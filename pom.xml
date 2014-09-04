@@ -4,7 +4,7 @@
 
     <groupId>com.imgur.backup</groupId>
     <artifactId>snapshot-s3-util</artifactId>
-    <version>2.0.0</version>
+    <version>2.0.1</version>
     <packaging>jar</packaging>
 
     <name>snapshot-s3-util</name>
@@ -19,10 +19,10 @@
     </licenses>
 
     <properties>
-        <hbaseVersion>0.98.1-cdh5.1.0</hbaseVersion>
-        <hadoopHdfsVersion>2.3.0-cdh5.1.0</hadoopHdfsVersion>
-        <hadoopCommonVersion>2.3.0-cdh5.1.0</hadoopCommonVersion>
-        <hadoopCoreVersion>2.3.0-cdh5.1.0</hadoopCoreVersion>
+        <hbaseVersion>0.98.1-cdh5.1.2</hbaseVersion>
+        <hadoopHdfsVersion>2.3.0-cdh5.1.2</hadoopHdfsVersion>
+        <hadoopCommonVersion>2.3.0-cdh5.1.2</hadoopCommonVersion>
+        <hadoopCoreVersion>2.3.0-cdh5.1.2</hadoopCoreVersion>
 <!--        <awsVersion>1.5.4</awsVersion> -->
         <slf4jVersion>1.7.7</slf4jVersion>
 <!--        <mrunitVersion>1.1.0</mrunitVersion> -->
