@@ -43,6 +43,11 @@ import org.apache.hadoop.util.ToolRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/*
+HBASE-11083 ExportSnapshot should provide capability to limit bandwidth consumption
+Added to 0.98.3 May 2014
+*/
+LIMITBW=false
 /**
  * Create snapshots of tables and export/import to/from S3
  */
@@ -236,10 +241,12 @@ public class SnapshotS3Util extends Configured implements Tool
             snapshotfromUrl,
             "-copy-to",
             url, 
-            "-mappers",
-            Long.toString(mappers),
+			if (LIMITBW) {
             "-bandwidth",
-            Long.toString(bandwidth)
+            Long.toString(bandwidth),
+			}
+            "-mappers",
+            Long.toString(mappers)
         };
 
         try {
@@ -281,10 +288,12 @@ public class SnapshotS3Util extends Configured implements Tool
                 snapshotName,
                 "-copy-to",
                 hdfsUrl,
+				if (LIMITBW) {
+				"-bandwidth",
+				Long.toString(bandwidth),
+				}
                 "-mappers",
-                Long.toString(mappers),
-                "-bandwidth",
-                Long.toString(bandwidth)
+                Long.toString(mappers)
             };
 
             // Override dfs configuration to point to S3 - THIS BREAKS IMPORT, COMMENTED OUT
@@ -458,7 +467,7 @@ public class SnapshotS3Util extends Configured implements Tool
         Option mappers = new Option("m", "mappers", true,
             "The number of parallel copiers if copying to/from S3. Default: 1");
         Option bandwidth = new Option("r", "bandwidth", true,
-            "The network bandwidth copying to/from S3 in Mb/s. Default: 200");
+            "The network bandwidth copying to/from S3 in Mb/s (v0.098.3 onwards). Default: 200");
         Option useS3 = new Option("a", "s3", false,
             "Use s3 protocol (currently not working for import)");
         Option snapshotTtl = new Option("l", "snapshotTtl", true,
