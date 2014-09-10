@@ -21,6 +21,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 
 import org.apache.commons.cli.CommandLine;
@@ -234,24 +235,23 @@ public class SnapshotS3Util extends Configured implements Tool
     private boolean exportToS3(String snapshotName) {
         int ret = -1;
         String url = getS3Url(true);
-        String[] args = {
-            "-snapshot",
-            snapshotName,
-            "-copy-from",
-            snapshotfromUrl,
-            "-copy-to",
-            url, 
-			if (LIMITBW) {
-            "-bandwidth",
-            Long.toString(bandwidth),
-			}
-            "-mappers",
-            Long.toString(mappers)
-        };
+        List<String> args = new ArrayList<>();
+        args.add("-snapshot");
+        args.add(snapshotName);
+        args.add("-copy-from");
+        args.add(snapshotfromUrl);
+        args.add("-copy-to");
+        args.add(url);
+		if (LIMITBW) {
+			args.add("-bandwidth");
+			args.add(Long.toString(bandwidth));
+		}
+        args.add("-mappers");
+        args.add(Long.toString(mappers));
 
         try {
             LOG.info("Destination: {}", url);
-            ret = ToolRunner.run(getNormalConfiguration(), new ExportSnapshot(), args);
+            ret = ToolRunner.run(getNormalConfiguration(), new ExportSnapshot(), args.toArray(new String[0]));
         } catch (Exception e) {
             LOG.error("Exception ocurred while exporting to S3", e);
         }
@@ -283,18 +283,19 @@ public class SnapshotS3Util extends Configured implements Tool
             }
             
             hdfsUrl = hdfsUrl + hdfsPath;
-            String[] args = {
-                "-snapshot",
-                snapshotName,
-                "-copy-to",
-                hdfsUrl,
-				if (LIMITBW) {
-				"-bandwidth",
-				Long.toString(bandwidth),
-				}
-                "-mappers",
-                Long.toString(mappers)
-            };
+ 
+			List<String> args = new ArrayList<>();
+			args.add("-snapshot");
+			args.add(snapshotName);
+			args.add("-copy-to");
+			args.add(url);
+			if (LIMITBW) {
+				args.add("-bandwidth");
+				args.add(Long.toString(bandwidth));
+			}
+			args.add("-mappers");
+			args.add(Long.toString(mappers));
+ 
 
             // Override dfs configuration to point to S3 - THIS BREAKS IMPORT, COMMENTED OUT
 			//config.set("fs.default.name", s3protocol + accessKey + ":" + accessSecret + "@" + bucketName);
@@ -314,8 +315,8 @@ public class SnapshotS3Util extends Configured implements Tool
                 Map.Entry<String, String> entry = it.next();
                 LOG.debug("{} : '{}'", entry.getKey(), entry.getValue());
             }
-            
-            ret = ToolRunner.run(config, new ExportSnapshot(), args);
+
+            ret = ToolRunner.run(config, new ExportSnapshot(), args.toArray(new String[0]));
         } catch (Exception e) {
             LOG.error("Exception ocurred while exporting to S3", e);
         }
