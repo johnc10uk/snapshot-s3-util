@@ -62,6 +62,7 @@ public class SnapshotS3Util extends Configured implements Tool
     private String hdfsPath     = "/hbase";
     private String snapshotfromUrl = "hdfs://nameservice1/hbase";
     private long mappers        = 1;
+    private long bandwidth      = 200;
     private long snapshotTtl    = 0;
     
     // S3 options
@@ -185,8 +186,9 @@ public class SnapshotS3Util extends Configured implements Tool
         LOG.info("HDFS Path       : {}", hdfsPath);
         LOG.info("Snapshot From Url : {}", snapshotfromUrl);
         LOG.info("Mappers         : {}", mappers);
-        LOG.info("s3 protocol     : {}", s3protocol);
-        LOG.info("Snapshot TTL    : {}", snapshotTtl);
+        LOG.info("Bandwidth       : {}", bandwidth);
+        LOG.info("S3 protocol     : {}", s3protocol);
+        LOG.info("HBase Snapshot TTL    : {}", snapshotTtl);
         LOG.info("--------------------------------------------------");
     }
 
@@ -236,6 +238,8 @@ public class SnapshotS3Util extends Configured implements Tool
             url, 
             "-mappers",
             Long.toString(mappers)
+            "-bandwidth",
+            Long.toString(bandwidth)
         };
 
         try {
@@ -279,6 +283,8 @@ public class SnapshotS3Util extends Configured implements Tool
                 hdfsUrl,
                 "-mappers",
                 Long.toString(mappers)
+                "-bandwidth",
+                Long.toString(bandwidth)
             };
 
             // Override dfs configuration to point to S3 - THIS BREAKS IMPORT, COMMENTED OUT
@@ -396,6 +402,9 @@ public class SnapshotS3Util extends Configured implements Tool
             case 'm':
                 mappers = Long.parseLong(option.getValue());
                 break;
+            case 'r':
+                bandwidth = Long.parseLong(option.getValue());
+                break;
             case 'a':
                 s3protocol = S3_PROTOCOL;
                 break;
@@ -448,6 +457,8 @@ public class SnapshotS3Util extends Configured implements Tool
             "The snapshot directory Url. Default is 'hdfs:://nameservice1/hbase'");
         Option mappers = new Option("m", "mappers", true,
             "The number of parallel copiers if copying to/from S3. Default: 1");
+        Option bandwidth = new Option("r", "bandwidth", true,
+            "The network bandwidth copying to/from S3 in Mb/s. Default: 200");
         Option useS3 = new Option("a", "s3", false,
             "Use s3 protocol (currently not working for import)");
         Option snapshotTtl = new Option("l", "snapshotTtl", true,
@@ -462,6 +473,7 @@ public class SnapshotS3Util extends Configured implements Tool
         hdfsPath.setRequired(false);
         snapshotfromUrl.setRequired(false);
         mappers.setRequired(false);
+        bandwidth.setRequired(false);
         useS3.setRequired(false);
         snapshotTtl.setRequired(false);
         
@@ -492,6 +504,7 @@ public class SnapshotS3Util extends Configured implements Tool
         options.addOption(hdfsPath);
         options.addOption(snapshotfromUrl);
         options.addOption(mappers);
+        options.addOption(bandwidth);
         options.addOption(useS3);
         options.addOption(snapshotTtl);
 
