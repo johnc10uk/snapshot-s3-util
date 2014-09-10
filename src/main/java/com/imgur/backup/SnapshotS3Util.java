@@ -281,9 +281,9 @@ public class SnapshotS3Util extends Configured implements Tool
                 Long.toString(mappers)
             };
 
-            // Override dfs configuration to point to S3
-//            config.set("fs.default.name", s3protocol + accessKey + ":" + accessSecret + "@" + bucketName);
-//            config.set("fs.defaultFS", s3protocol + accessKey + ":" + accessSecret  + "@" + bucketName);
+            // Override dfs configuration to point to S3 - THIS BREAKS IMPORT, COMMENTED OUT
+			//config.set("fs.default.name", s3protocol + accessKey + ":" + accessSecret + "@" + bucketName);
+			//config.set("fs.defaultFS", s3protocol + accessKey + ":" + accessSecret  + "@" + bucketName);
             config.set("fs.s3.awsAccessKeyId", accessKey);
             config.set("fs.s3.awsSecretAccessKey", accessSecret);
             config.set("hbase.tmp.dir", "/tmp/hbase-${user.name}");
@@ -472,7 +472,7 @@ public class SnapshotS3Util extends Configured implements Tool
         Option exportSnapshot = new Option("e", "export", false,
             "Export HBase snapshot to S3");
         Option importSnapshot = new Option("i", "import", false,
-            "Import HBase snapshot from S3. May need to run as hbase user if importing into HBase");
+            "Import HBase snapshot from S3. May need to run as hbase user if importing into HBase (check who owns /hbase files. hbase user shell may be set to /bin/false, set to /bin/bash so can run using sudo -u hbase");
 
         OptionGroup actions = new OptionGroup();
         actions.setRequired(true);

@@ -8,8 +8,8 @@
     <packaging>jar</packaging>
 
     <name>snapshot-s3-util</name>
-    <description>Utility for import HBase snapshot in and out of S3</description>
-    <url>https://github.com/lospro7/snapshot-s3-util</url>
+    <description>Utility for import HBase snapshot in and out of S3n (s3 export only, import fails)</description>
+    <url>https://github.com/johnc10uk/snapshot-s3-util</url>
 
     <licenses>
         <license>
