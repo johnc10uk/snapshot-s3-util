@@ -43,12 +43,8 @@ import org.apache.hadoop.util.ToolRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
 /*
-HBASE-11083 ExportSnapshot should provide capability to limit bandwidth consumption
-Added to 0.98.3 May 2014
-*/
-LIMITBW=false
-/**
  * Create snapshots of tables and export/import to/from S3
  */
 public class SnapshotS3Util extends Configured implements Tool
@@ -76,7 +72,11 @@ public class SnapshotS3Util extends Configured implements Tool
     private String bucketName   = null;
     private String s3Path       = "/hbase";
     private String s3protocol   = S3N_PROTOCOL;
-
+	/*
+	HBASE-11083 ExportSnapshot should provide capability to limit bandwidth consumption
+	Added to 0.98.3 May 2014
+	*/
+	private String LIMITBW		= false;
     /**
      * Init and run job
      * @param args command line options
