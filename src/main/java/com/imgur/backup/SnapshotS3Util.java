@@ -78,6 +78,7 @@ public class SnapshotS3Util extends Configured implements Tool
 	Added to 0.98.3 May 2014
 	*/
 	private boolean LIMITBW		= false;
+	
     /**
      * Init and run job
      * @param args command line options
