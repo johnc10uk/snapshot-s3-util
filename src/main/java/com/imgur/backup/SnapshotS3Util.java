@@ -282,7 +282,7 @@ public class SnapshotS3Util extends Configured implements Tool
                 "-copy-to",
                 hdfsUrl,
                 "-mappers",
-                Long.toString(mappers)
+                Long.toString(mappers),
                 "-bandwidth",
                 Long.toString(bandwidth)
             };
