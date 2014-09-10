@@ -235,7 +235,8 @@ public class SnapshotS3Util extends Configured implements Tool
     private boolean exportToS3(String snapshotName) {
         int ret = -1;
         String url = getS3Url(true);
-        List<String> args = new ArrayList<>();
+        
+        List<String> args = new ArrayList<String>();      
         args.add("-snapshot");
         args.add(snapshotName);
         args.add("-copy-from");
@@ -283,8 +284,8 @@ public class SnapshotS3Util extends Configured implements Tool
             }
             
             hdfsUrl = hdfsUrl + hdfsPath;
- 
-			List<String> args = new ArrayList<>();
+
+			List<String> args = new ArrayList<String>();
 			args.add("-snapshot");
 			args.add(snapshotName);
 			args.add("-copy-to");
