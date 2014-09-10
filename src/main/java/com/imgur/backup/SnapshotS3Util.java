@@ -290,7 +290,7 @@ public class SnapshotS3Util extends Configured implements Tool
 			args.add("-snapshot");
 			args.add(snapshotName);
 			args.add("-copy-to");
-			args.add(url);
+			args.add(hdfsUrl);
 			if (LIMITBW) {
 				args.add("-bandwidth");
 				args.add(Long.toString(bandwidth));
