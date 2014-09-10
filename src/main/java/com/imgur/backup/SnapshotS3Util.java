@@ -77,7 +77,7 @@ public class SnapshotS3Util extends Configured implements Tool
 	HBASE-11083 ExportSnapshot should provide capability to limit bandwidth consumption
 	Added to 0.98.3 May 2014
 	*/
-	private String LIMITBW		= false;
+	private boolean LIMITBW		= false;
     /**
      * Init and run job
      * @param args command line options
@@ -284,7 +284,7 @@ public class SnapshotS3Util extends Configured implements Tool
             }
             
             hdfsUrl = hdfsUrl + hdfsPath;
-
+	
 			List<String> args = new ArrayList<String>();
 			args.add("-snapshot");
 			args.add(snapshotName);
