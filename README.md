@@ -1,6 +1,6 @@
 # Updates to the CDH4 version
 
-Compiled against CDH 5.1.2 using YARN (MR2) September 2014
+Compiled against CDH 5.1.3 using YARN (MR2) September 2014
 Version 2.0.1
 Added a copy-from option for export
 Test export to s3 and s3n storage
@@ -22,7 +22,7 @@ Note: hbase user shell may be set to /bin/false, set to /bin/bash.
 ```
 grep /etc/passwd hbase
  hbase:x:985:984:HBase:/var/run/hbase:/bin/bash
-sudo -u hbase HADOOP_CLASSPATH=$(hbase classpath) hadoop jar target/snapshot-s3-util-2.0.0.jar com.imgur.backup.SnapshotS3Util --createExport --table test5 --awsAccessKey <accessKey> --awsAccessSecret <accessSecret> --bucketName <bucketName> --mappers <numMaps>
+sudo -u hbase HADOOP_CLASSPATH=$(hbase classpath) hadoop jar target/snapshot-s3-util-2.0.1.jar com.imgur.backup.SnapshotS3Util --createExport --table test5 --awsAccessKey <accessKey> --awsAccessSecret <accessSecret> --bucketName <bucketName> --mappers <numMaps>
 ```
 Output
 ```
@@ -60,7 +60,7 @@ sudo -u hdfs hadoop fs -chmod 777 /user
 
 Import snapshot from s3n store directory /hbase (-p) to HDFS /hbase (-d)
 
-sudo -u hbase HADOOP_CLASSPATH=$(hbase classpath) hadoop jar target/snapshot-s3-util-2.0.0.jar com.imgur.backup.SnapshotS3Util --import --snapshot test1-snapshot-20140828_154448 -d /hbase -p /hbase --awsAccessKey <accessKey> --awsAccessSecret <accessSecret> --bucketName <bucketName> --mappers <numMaps>
+sudo -u hbase HADOOP_CLASSPATH=$(hbase classpath) hadoop jar target/snapshot-s3-util-2.0.1.jar com.imgur.backup.SnapshotS3Util --import --snapshot test1-snapshot-20140828_154448 -d /hbase -p /hbase --awsAccessKey <accessKey> --awsAccessSecret <accessSecret> --bucketName <bucketName> --mappers <numMaps>
 
 Confirm table can be restored
 
