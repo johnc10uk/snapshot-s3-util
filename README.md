@@ -141,14 +141,6 @@ S3
   <value>org.apache.hadoop.fs.s3native.NativeS3FileSystem</value>
 </property>
 <property>
-    <name>fs.s3n.awsAccessKeyId</name>
-    <value>key</value>
-</property>
-<property>
-    <name>fs.s3n.awsSecretAccessKey</name>
-    <value>secret</value>
-</property>
-<property>
     <name>fs.s3n.multipart.uploads.enabled</name>
     <value>true</value>
 </property>
