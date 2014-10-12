@@ -15,13 +15,9 @@ mvn clean package
 
 # Running
 
-To create a snapshot of table test1 and immediately export to S3n:// from a NameNode server
-
-Note: hbase user shell may be set to /bin/false, set to /bin/bash.
+To create a snapshot of table test1 and immediately export to S3n:// from a NameNode server. Number of mappers should be same as number of region servers.
 
 ```
-grep /etc/passwd hbase
- hbase:x:985:984:HBase:/var/run/hbase:/bin/bash
 sudo -u hbase HADOOP_CLASSPATH=$(hbase classpath) hadoop jar target/snapshot-s3-util-2.0.1.jar com.imgur.backup.SnapshotS3Util --createExport --table test5 --awsAccessKey <accessKey> --awsAccessSecret <accessSecret> --bucketName <bucketName> --mappers <numMaps>
 ```
 Output
@@ -115,7 +111,7 @@ S3
  -k,--awsAccessKey <arg>      The AWS access key
  -l,--snapshotTtl <arg>       Delete snapshots older than this value
                               (seconds) from running HBase cluster
- -m,--mappers <arg>           The number of parallel copiers if copying
+ -m,--mappers <arg>           The number of parallel copiers if copying (same as number of region server)
                               to/from S3. Default: 1
  -n,--snapshot <arg>          The snapshot name. Required for importing
                               from S3
@@ -132,19 +128,6 @@ S3
 
 ```
 <!-- Amazon S3 -->
-<property>
-    <name>fs.s3.awsAccessKeyId</name>
-    <value>key</value>
-</property>
-<property>
-    <name>fs.s3.awsSecretAccessKey</name>
-    <value>secret</value>
-</property>
-<!-- Amazon S3N -->
-<property>
-  <name>fs.s3.impl</name>
-  <value>org.apache.hadoop.fs.s3.S3FileSystem</value>
-</property>
 <property>
   <name>fs.s3n.impl</name>
   <value>org.apache.hadoop.fs.s3native.NativeS3FileSystem</value>

@@ -468,7 +468,7 @@ public class SnapshotS3Util extends Configured implements Tool
         Option snapshotfromUrl = new Option("f", "snapshotfromUrl", true,
             "The snapshot directory Url. Default is 'hdfs:://nameservice1/hbase'");
         Option mappers = new Option("m", "mappers", true,
-            "The number of parallel copiers if copying to/from S3. Default: 1");
+            "The number of parallel copiers if copying to/from S3 (same as number of region servers). Default: 1");
         Option bandwidth = new Option("r", "bandwidth", true,
             "The network bandwidth copying to/from S3 in Mb/s (v0.098.3 onwards). Default: 200");
         Option useS3 = new Option("a", "s3", false,
