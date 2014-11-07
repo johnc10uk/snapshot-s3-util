@@ -1,6 +1,6 @@
-# Updates to the CDH4 version
+# Updates to the CDH4 version for CDH5
 
-Compiled against CDH 5.1.3 using YARN (MR2) September 2014
+Compiled against CDH 5.2.0 using YARN (MR2) November 2014
 Version 2.0.1
 Added a copy-from option for export
 Test export to s3 and s3n storage

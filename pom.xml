@@ -19,10 +19,10 @@
     </licenses>
 
     <properties>
-        <hbaseVersion>0.98.1-cdh5.1.3</hbaseVersion>
-        <hadoopHdfsVersion>2.3.0-cdh5.1.3</hadoopHdfsVersion>
-        <hadoopCommonVersion>2.3.0-cdh5.1.3</hadoopCommonVersion>
-        <hadoopCoreVersion>2.3.0-cdh5.1.3</hadoopCoreVersion>
+        <hbaseVersion>0.98.6-cdh5.2.0</hbaseVersion>
+        <hadoopHdfsVersion>2.5.0-cdh5.2.0</hadoopHdfsVersion>
+        <hadoopCommonVersion>2.5.0-cdh5.2.0</hadoopCommonVersion>
+        <hadoopCoreVersion>2.5.0-cdh5.2.0</hadoopCoreVersion>
 <!--        <awsVersion>1.5.4</awsVersion> -->
         <slf4jVersion>1.7.7</slf4jVersion>
 <!--        <mrunitVersion>1.1.0</mrunitVersion> -->
@@ -257,4 +257,3 @@
     </build>
 
 </project>
-
