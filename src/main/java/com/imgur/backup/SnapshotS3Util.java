@@ -58,7 +58,8 @@ public class SnapshotS3Util extends Configured implements Tool
     private boolean createSnapshot = false;
     private boolean exportSnapshot = false;
     private boolean importSnapshot = false;
-
+    private boolean overwrite = false;
+    
     private String snapshotName = null;
     private String tableName    = null;
     private String hdfsPath     = "/hbase";
@@ -196,6 +197,7 @@ public class SnapshotS3Util extends Configured implements Tool
         LOG.info("Bandwidth       : {}", bandwidth);
         LOG.info("S3 protocol     : {}", s3protocol);
         LOG.info("HBase Snapshot TTL    : {}", snapshotTtl);
+        LOG.info("Overwrite S3 files  : {}", overwrite);
         LOG.info("--------------------------------------------------");
     }
 
@@ -250,7 +252,9 @@ public class SnapshotS3Util extends Configured implements Tool
 		}
         args.add("-mappers");
         args.add(Long.toString(mappers));
-
+        args.add("-overwrite");
+        args.add(overwrite);
+        
         try {
             LOG.info("Destination: {}", url);
             ret = ToolRunner.run(getNormalConfiguration(), new ExportSnapshot(), args.toArray(new String[0]));
@@ -423,6 +427,9 @@ public class SnapshotS3Util extends Configured implements Tool
             case 'l':
                 snapshotTtl = Long.parseLong(option.getValue());
                 break;
+            case 'w':
+                overwrite = false;
+                break;
             default:
                 throw new IllegalArgumentException("unexpected option " + option);
             }
@@ -475,7 +482,10 @@ public class SnapshotS3Util extends Configured implements Tool
             "Use s3 protocol (currently not working for import)");
         Option snapshotTtl = new Option("l", "snapshotTtl", true,
             "Delete snapshots older than this value (seconds) from running HBase cluster");
+        Option overwrite = new Option("w", "overwrite", false,
+            "Overwrite S3 files if already exist. Default is false");
         
+        /* Is it required on command line? */            
         tableName.setRequired(false);
         snapshotName.setRequired(false);
         accessId.setRequired(false);
@@ -488,7 +498,8 @@ public class SnapshotS3Util extends Configured implements Tool
         bandwidth.setRequired(false);
         useS3.setRequired(false);
         snapshotTtl.setRequired(false);
-        
+        overwrite.setRequired(false);
+                
         Option createSnapshot = new Option("c", "create", false,
             "Create HBase snapshot");
         Option createExportSnapshot = new Option("x", "createExport", false,
@@ -519,7 +530,8 @@ public class SnapshotS3Util extends Configured implements Tool
         options.addOption(bandwidth);
         options.addOption(useS3);
         options.addOption(snapshotTtl);
-
+        options.addOption(overwrite);
+        
         return options;
     }
     

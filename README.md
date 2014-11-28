@@ -1,12 +1,14 @@
 # Updates to the CDH4 version for CDH5
 
-Compiled against CDH 5.2.0 using YARN (MR2) November 2014
+Compiled against CDH 5.2.0 HBase 0.98.6 using YARN (MR2) November 2014
 Version 2.0.1
 Added a copy-from option for export
 Test export to s3 and s3n storage
 Import will currently only work from s3n, now default (5GB file size limit unless use multipart file feature which allows 5TB file sizes)
 Option to use fs.s3n.multipart.uploads.enabled to allow greater than 5GB HDFS files to S3n store (core-site.xml and jets3t.properties to increase threads from default of 2 to say 20)
 s3 import fails as using s3 directory /data/default and doesn't try /.tmp or /archive as seen earlier in debug output. Files are in /rootpath/archive/data/default and I cannot find how to override this setting. Error is java.io.IOException: No such file.
+
+Note: Backup of a large table will require a large amount of /tmp/hadoop-hdfs/s3/ space on the datanode (>10GB). Ensure all datanodes /tmp have sufficient free space or sym link /tmp/hadoop-hdfs to its own disc.
 
 # Building
 ```
@@ -35,6 +37,7 @@ Output
 14/08/28 15:44:48 INFO backup.SnapshotS3Util: Mappers         : 4
 14/08/28 15:44:48 INFO backup.SnapshotS3Util: s3 protocol     : s3n://
 14/08/28 15:44:48 INFO backup.SnapshotS3Util: Snapshot TTL    : 0
+14/08/28 15:44:48 INFO backup.SnapshotS3Util: Overwrite S3 files  : false
 14/08/28 15:44:48 INFO backup.SnapshotS3Util: --------------------------------------------------
 14/08/28 15:44:48 INFO backup.SnapshotS3Util: Creating snapshot...
 14/08/28 15:45:16 INFO snapshot.ExportSnapshot: Export Completed: test1-snapshot-20140828_154448
@@ -92,10 +95,11 @@ Output
 ```
 # Options
 ```
-usage: BackupUtil [-a] -b <arg> -c | -e | -f <arg> | -i | -x [-d <arg>]   -k <arg>
-       [-l <arg>] [-m <arg>] [-n <arg>] [-p <arg>] -s <arg> [-t <arg>]
-Backup utility for creating snapshots and exporting/importing to and from
-S3
+usage: SnapshotS3Util [-a] -b <arg> -c | -e | -f <arg> | -i | -x [-d <arg>] -k <arg>
+       [-l <arg>] [-m <arg>] [-n <arg>] [-p <arg>] -s <arg> [-t <arg>] [-w]
+       
+Backup utility for creating snapshots and exporting/importing to and from S3
+
  -a,--s3                      Use s3 protocol instead of s3n. Currently not
                               working for s3 import (file import path issue)                           
  -b,--bucketName <arg>        The S3 bucket name where snapshots are
@@ -121,6 +125,7 @@ S3
  -t,--table <arg>             The table name to create a snapshot from.
                               Required for creating a snapshot
  -x,--createExport            Create HBase snapshot AND export to S3
+ -w,--overwrite               Overwrite S3 files if already exist. Default is false
 
 ```
 
