@@ -197,7 +197,11 @@ public class SnapshotS3Util extends Configured implements Tool
         LOG.info("Bandwidth       : {}", bandwidth);
         LOG.info("S3 protocol     : {}", s3protocol);
         LOG.info("HBase Snapshot TTL    : {}", snapshotTtl);
-        LOG.info("Overwrite S3 files  : {}", overwrite);
+		if (overwrite) {
+			LOG.info("Overwrite S3 files  : {}", true);
+		} else
+			LOG.info("Overwrite S3 files  : {}", true);
+		}
         LOG.info("--------------------------------------------------");
     }
 
@@ -252,8 +256,9 @@ public class SnapshotS3Util extends Configured implements Tool
 		}
         args.add("-mappers");
         args.add(Long.toString(mappers));
-        args.add("-overwrite");
-        args.add(overwrite);
+		if (overwrite) {
+			args.add("-overwrite");
+		}
         
         try {
             LOG.info("Destination: {}", url);
