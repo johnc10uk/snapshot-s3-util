@@ -253,7 +253,7 @@ public class SnapshotS3Util extends Configured implements Tool
         args.add("-mappers");
         args.add(Long.toString(mappers));
         args.add("-overwrite");
-        args.add(Long.toString(overwrite));
+        args.add(overwrite);
         
         try {
             LOG.info("Destination: {}", url);
