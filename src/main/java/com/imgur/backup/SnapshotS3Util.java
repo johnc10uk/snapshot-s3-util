@@ -197,8 +197,8 @@ public class SnapshotS3Util extends Configured implements Tool
         LOG.info("Bandwidth       : {}", bandwidth);
         LOG.info("S3 protocol     : {}", s3protocol);
         LOG.info("HBase Snapshot TTL    : {}", snapshotTtl);
-		if (overwrite) {
-			LOG.info("Overwrite S3 files  : {}", true);
+		if (overwrite == "") {
+			LOG.info("Overwrite S3 files  : {}", false);
 		} else {
 			LOG.info("Overwrite S3 files  : {}", true);
 		}
