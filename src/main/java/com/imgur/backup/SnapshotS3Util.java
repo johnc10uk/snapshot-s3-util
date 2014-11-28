@@ -66,7 +66,7 @@ public class SnapshotS3Util extends Configured implements Tool
     private long mappers        = 1;
     private long bandwidth      = 200;
     private long snapshotTtl    = 0;
-    private long overwrite      = null;
+    private String overwrite      = null;
     
     // S3 options
     private String accessKey    = null;
