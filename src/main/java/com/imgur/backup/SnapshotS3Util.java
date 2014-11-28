@@ -199,7 +199,7 @@ public class SnapshotS3Util extends Configured implements Tool
         LOG.info("HBase Snapshot TTL    : {}", snapshotTtl);
 		if (overwrite) {
 			LOG.info("Overwrite S3 files  : {}", true);
-		} else
+		} else {
 			LOG.info("Overwrite S3 files  : {}", true);
 		}
         LOG.info("--------------------------------------------------");
