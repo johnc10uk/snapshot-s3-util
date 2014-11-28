@@ -64,7 +64,7 @@ public class SnapshotS3Util extends Configured implements Tool
     private String hdfsPath     = "/hbase";
     private String snapshotfromUrl = "hdfs://nameservice1/hbase";
     private long mappers        = 1;
-    private long bandwidth      = "";
+    private long bandwidth      = 0;
     private long snapshotTtl    = 0;
     private String overwrite      = "";
     
@@ -194,7 +194,7 @@ public class SnapshotS3Util extends Configured implements Tool
         LOG.info("HDFS Path       : {}", hdfsPath);
         LOG.info("Snapshot From Url : {}", snapshotfromUrl);
         LOG.info("Mappers         : {}", mappers);
-		if (bandwidth == "") {
+		if (bandwidth == 0) {
 			LOG.info("Bandwidth       : unlimited");
 		} else {
 			LOG.info("Bandwidth       : {}", bandwidth);
@@ -486,7 +486,7 @@ public class SnapshotS3Util extends Configured implements Tool
         Option mappers = new Option("m", "mappers", true,
             "The number of parallel copiers if copying to/from S3 (same as number of region servers). Default: 1");
         Option bandwidth = new Option("r", "bandwidth", true,
-            "The network bandwidth copying to/from S3 in Mb/s (v0.098.3 onwards). Default: 200");
+            "The network bandwidth copying to/from S3 in Mb/s (v0.098.3 onwards). Default: unlimited");
         Option useS3 = new Option("a", "s3", true,
             "Use s3 protocol (currently not working for import)");
         Option snapshotTtl = new Option("l", "snapshotTtl", true,
