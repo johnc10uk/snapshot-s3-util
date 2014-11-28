@@ -66,7 +66,7 @@ public class SnapshotS3Util extends Configured implements Tool
     private long mappers        = 1;
     private long bandwidth      = 200;
     private long snapshotTtl    = 0;
-    private long overwrite      = 0;
+    private long overwrite      = null;
     
     // S3 options
     private String accessKey    = null;
@@ -428,7 +428,7 @@ public class SnapshotS3Util extends Configured implements Tool
                 snapshotTtl = Long.parseLong(option.getValue());
                 break;
             case 'w':
-                overwrite = 1;
+                overwrite = "-w";
                 break;
             default:
                 throw new IllegalArgumentException("unexpected option " + option);
