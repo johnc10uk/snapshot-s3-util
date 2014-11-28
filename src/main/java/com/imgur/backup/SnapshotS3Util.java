@@ -58,7 +58,6 @@ public class SnapshotS3Util extends Configured implements Tool
     private boolean createSnapshot = false;
     private boolean exportSnapshot = false;
     private boolean importSnapshot = false;
-    private boolean overwrite = false;
     
     private String snapshotName = null;
     private String tableName    = null;
@@ -67,6 +66,7 @@ public class SnapshotS3Util extends Configured implements Tool
     private long mappers        = 1;
     private long bandwidth      = 200;
     private long snapshotTtl    = 0;
+    private long overwrite      = 0;
     
     // S3 options
     private String accessKey    = null;
@@ -253,7 +253,7 @@ public class SnapshotS3Util extends Configured implements Tool
         args.add("-mappers");
         args.add(Long.toString(mappers));
         args.add("-overwrite");
-        args.add(overwrite);
+        args.add(Long.toString(overwrite));
         
         try {
             LOG.info("Destination: {}", url);
@@ -428,7 +428,7 @@ public class SnapshotS3Util extends Configured implements Tool
                 snapshotTtl = Long.parseLong(option.getValue());
                 break;
             case 'w':
-                overwrite = false;
+                overwrite = 1;
                 break;
             default:
                 throw new IllegalArgumentException("unexpected option " + option);
