@@ -484,15 +484,15 @@ public class SnapshotS3Util extends Configured implements Tool
         Option snapshotfromUrl = new Option("f", "snapshotfromUrl", true,
             "The snapshot directory Url. Default is 'hdfs:://nameservice1/hbase'");
         Option mappers = new Option("m", "mappers", true,
-            "The number of parallel copiers if copying to/from S3 (same as number of region servers). Default: 1");
+            "The number of parallel copiers if copying to/from S3 (same as number of region servers). Default: 1. Usage for 3 mappers: -m 3");
         Option bandwidth = new Option("r", "bandwidth", true,
-            "The network bandwidth copying to/from S3 in Mb/s (v0.098.3 onwards). Default: unlimited");
+            "The network bandwidth copying to/from S3 in Mb/s (v0.098.3 onwards). Default: unlimited. Usage for 50Mb/s limit: -r 50");
         Option useS3 = new Option("a", "s3", true,
             "Use s3 protocol (currently not working for import)");
         Option snapshotTtl = new Option("l", "snapshotTtl", true,
             "Delete snapshots older than this value (seconds) from running HBase cluster");
         Option overwrite = new Option("w", "overwrite", true,
-            "Overwrite S3 files if already exist.");
+            "Overwrite S3 files if already exist. Usage: -w true");
         
         /* Is it required on command line? */            
         tableName.setRequired(false);

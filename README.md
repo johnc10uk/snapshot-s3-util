@@ -6,6 +6,10 @@ Version 2.0.1
 
 Added a copy-from option for export
 
+Added overwrite S3 files option
+
+Added Bandwidth option ((v0.098.3 onwards)
+
 Test export to s3 and s3n storage
 
 Import will currently only work from s3n, now default (5GB file size limit unless use multipart file feature which allows 5TB file sizes)
@@ -26,29 +30,30 @@ mvn clean package
 To create a snapshot of table test1 and immediately export to S3n:// from a NameNode server. Number of mappers should be same as number of region servers.
 
 ```
-sudo -u hbase HADOOP_CLASSPATH=$(hbase classpath) hadoop jar target/snapshot-s3-util-2.0.1.jar com.imgur.backup.SnapshotS3Util --createExport --table test5 --awsAccessKey <accessKey> --awsAccessSecret <accessSecret> --bucketName <bucketName> --mappers <numMaps>
+sudo -u hbase HADOOP_CLASSPATH=$(hbase classpath) hadoop jar target/snapshot-s3-util-2.0.1.jar com.imgur.backup.SnapshotS3Util --createExport --table test1 --awsAccessKey <accessKey> --awsAccessSecret <accessSecret> --bucketName hbasebucketname --mappers 3
 ```
 Output
 ```
-14/08/28 15:44:48 INFO backup.SnapshotS3Util: --------------------------------------------------
-14/08/28 15:44:48 INFO backup.SnapshotS3Util: Create snapshot : true
-14/08/28 15:44:48 INFO backup.SnapshotS3Util: Export snapshot : true
-14/08/28 15:44:48 INFO backup.SnapshotS3Util: Import snapshot : false
-14/08/28 15:44:48 INFO backup.SnapshotS3Util: Table name      : test1
-14/08/28 15:44:48 INFO backup.SnapshotS3Util: Snapshot name   : test1-snapshot-20140828_154448
-14/08/28 15:44:48 INFO backup.SnapshotS3Util: Bucket name     : hbasebucketname
-14/08/28 15:44:48 INFO backup.SnapshotS3Util: S3 Path         : /hbase
-14/08/28 15:44:48 INFO backup.SnapshotS3Util: HDFS Path       : /hbase
-14/08/28 15:44:48 INFO backup.SnapshotS3Util: Snapshot From Url : hdfs://nameservice1/hbase
-14/08/28 15:44:48 INFO backup.SnapshotS3Util: Mappers         : 4
-14/08/28 15:44:48 INFO backup.SnapshotS3Util: s3 protocol     : s3n://
-14/08/28 15:44:48 INFO backup.SnapshotS3Util: Snapshot TTL    : 0
-14/08/28 15:44:48 INFO backup.SnapshotS3Util: Overwrite S3 files  : false
-14/08/28 15:44:48 INFO backup.SnapshotS3Util: --------------------------------------------------
-14/08/28 15:44:48 INFO backup.SnapshotS3Util: Creating snapshot...
-14/08/28 15:45:16 INFO snapshot.ExportSnapshot: Export Completed: test1-snapshot-20140828_154448
-14/08/28 15:45:16 INFO backup.SnapshotS3Util: Successfully exported snapshot 'test1-snapshot-20140828_154448' to S3
-14/08/28 15:45:16 INFO backup.SnapshotS3Util: Complete
+14/11/28 14:18:01 INFO backup.SnapshotS3Util: --------------------------------------------------
+14/11/28 14:18:01 INFO backup.SnapshotS3Util: Create snapshot : true
+14/11/28 14:18:01 INFO backup.SnapshotS3Util: Export snapshot : true
+14/11/28 14:18:01 INFO backup.SnapshotS3Util: Import snapshot : false
+14/11/28 14:18:01 INFO backup.SnapshotS3Util: Table name      : test1
+14/11/28 14:18:01 INFO backup.SnapshotS3Util: Snapshot name   : test1-snapshot-20141128_122849
+14/11/28 14:18:01 INFO backup.SnapshotS3Util: Bucket name     : hbasebucketname
+14/11/28 14:18:01 INFO backup.SnapshotS3Util: S3 Path         : /hbase/20141128
+14/11/28 14:18:01 INFO backup.SnapshotS3Util: HDFS Path       : /hbase
+14/11/28 14:18:01 INFO backup.SnapshotS3Util: Snapshot From Url : hdfs://nameservice1/hbase
+14/11/28 14:18:01 INFO backup.SnapshotS3Util: Mappers         : 3
+14/11/28 14:18:01 INFO backup.SnapshotS3Util: Bandwidth       : unlimited
+14/11/28 14:18:01 INFO backup.SnapshotS3Util: S3 protocol     : s3n://
+14/11/28 14:18:01 INFO backup.SnapshotS3Util: HBase Snapshot TTL    : 0
+14/11/28 14:18:01 INFO backup.SnapshotS3Util: Overwrite S3 files  : false
+14/11/28 14:18:01 INFO backup.SnapshotS3Util: --------------------------------------------------
+14/11/28 14:18:01 INFO backup.SnapshotS3Util: Creating snapshot...
+14/11/28 14:18:01 INFO snapshot.ExportSnapshot: Export Completed: test1-snapshot-20141128_122849
+14/11/28 14:18:01 INFO backup.SnapshotS3Util: Successfully exported snapshot 'test1-snapshot-20141128_122849' to S3
+14/11/28 14:18:01 INFO backup.SnapshotS3Util: Complete
 
 ```
 Import from s3n:// table backup in to Hbase
@@ -102,7 +107,7 @@ Output
 # Options
 ```
 usage: SnapshotS3Util [-a] -b <arg> -c | -e | -f <arg> | -i | -x [-d <arg>] -k <arg>
-       [-l <arg>] [-m <arg>] [-n <arg>] [-p <arg>] -s <arg> [-t <arg>] [-w]
+       [-l <arg>] [-m <arg>] [-n <arg>] [-p <arg>] -s <arg> [-t <arg>] [-w <arg>] [-r <arg> ]
        
 Backup utility for creating snapshots and exporting/importing to and from S3
 
@@ -127,11 +132,13 @@ Backup utility for creating snapshots and exporting/importing to and from S3
                               from S3
  -p,--s3Path <arg>            The snapshot directory in S3. Default is
                               '/hbase'
+ -r,--bandwidth <arg>         The network bandwidth copying to/from S3 in
+                              Mb/s (v0.098.3 onwards). Default: unlimited
  -s,--awsAccessSecret <arg>   The AWS access secret string
  -t,--table <arg>             The table name to create a snapshot from.
                               Required for creating a snapshot
  -x,--createExport            Create HBase snapshot AND export to S3
- -w,--overwrite               Overwrite S3 files if already exist. Default is false
+ -w,--overwrite <arg>         Overwrite S3 files if already exist. Default is false
 
 ```
 
