@@ -64,7 +64,7 @@ public class SnapshotS3Util extends Configured implements Tool
     private String hdfsPath     = "/hbase";
     private String snapshotfromUrl = "hdfs://nameservice1/hbase";
     private long mappers        = 1;
-    private long bandwidth      = 200;
+    private long bandwidth      = "";
     private long snapshotTtl    = 0;
     private String overwrite      = "";
     
@@ -194,7 +194,11 @@ public class SnapshotS3Util extends Configured implements Tool
         LOG.info("HDFS Path       : {}", hdfsPath);
         LOG.info("Snapshot From Url : {}", snapshotfromUrl);
         LOG.info("Mappers         : {}", mappers);
-        LOG.info("Bandwidth       : {}", bandwidth);
+		if (bandwidth == "") {
+			LOG.info("Bandwidth       : unlimited");
+		} else {
+			LOG.info("Bandwidth       : {}", bandwidth);
+		}
         LOG.info("S3 protocol     : {}", s3protocol);
         LOG.info("HBase Snapshot TTL    : {}", snapshotTtl);
 		if (overwrite == "") {
