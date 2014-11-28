@@ -256,7 +256,7 @@ public class SnapshotS3Util extends Configured implements Tool
 		}
         args.add("-mappers");
         args.add(Long.toString(mappers));
-		if (overwrite) {
+		if (overwrite != "") {
 			args.add("-overwrite");
 		}
         
