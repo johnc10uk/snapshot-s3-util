@@ -428,7 +428,7 @@ public class SnapshotS3Util extends Configured implements Tool
                 snapshotTtl = Long.parseLong(option.getValue());
                 break;
             case 'w':
-                overwrite = "-w";
+                overwrite = "--overwrite";
                 break;
             default:
                 throw new IllegalArgumentException("unexpected option " + option);
@@ -483,7 +483,7 @@ public class SnapshotS3Util extends Configured implements Tool
         Option snapshotTtl = new Option("l", "snapshotTtl", true,
             "Delete snapshots older than this value (seconds) from running HBase cluster");
         Option overwrite = new Option("w", "overwrite", true,
-            "Overwrite S3 files if already exist. Default is false");
+            "Overwrite S3 files if already exist.");
         
         /* Is it required on command line? */            
         tableName.setRequired(false);
