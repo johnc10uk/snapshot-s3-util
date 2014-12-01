@@ -64,7 +64,7 @@ public class SnapshotS3Util extends Configured implements Tool
     private String hdfsPath     = "/hbase";
     private String snapshotfromUrl = "hdfs://nameservice1/hbase";
     private long mappers        = 1;
-    private long bandwidth      = 0;
+    private long bandwidth      = 200;
     private long snapshotTtl    = 0;
     private String overwrite      = "";
     
@@ -194,11 +194,7 @@ public class SnapshotS3Util extends Configured implements Tool
         LOG.info("HDFS Path       : {}", hdfsPath);
         LOG.info("Snapshot From Url : {}", snapshotfromUrl);
         LOG.info("Mappers         : {}", mappers);
-		if (bandwidth == 0) {
-			LOG.info("Bandwidth       : unlimited");
-		} else {
-			LOG.info("Bandwidth       : {}", bandwidth);
-		}
+		LOG.info("Bandwidth       : {}", bandwidth);
         LOG.info("S3 protocol     : {}", s3protocol);
         LOG.info("HBase Snapshot TTL    : {}", snapshotTtl);
 		if (overwrite == "") {
@@ -310,7 +306,9 @@ public class SnapshotS3Util extends Configured implements Tool
 			}
 			args.add("-mappers");
 			args.add(Long.toString(mappers));
- 
+			if (overwrite != "") {
+				args.add("-overwrite");
+			} 
 
             // Override dfs configuration to point to S3 - THIS BREAKS IMPORT, COMMENTED OUT
 			//config.set("fs.default.name", s3protocol + accessKey + ":" + accessSecret + "@" + bucketName);
@@ -486,7 +484,7 @@ public class SnapshotS3Util extends Configured implements Tool
         Option mappers = new Option("m", "mappers", true,
             "The number of parallel copiers if copying to/from S3 (same as number of region servers). Default: 1. Usage for 3 mappers: -m 3");
         Option bandwidth = new Option("r", "bandwidth", true,
-            "The network bandwidth copying to/from S3 in Mb/s (v0.098.3 onwards). Default: unlimited. Usage for 50Mb/s limit: -r 50");
+            "The network bandwidth copying to/from S3 in Mb/s (v0.098.3 onwards). Default: 200. Usage for 50Mb/s limit: -r 50");
         Option useS3 = new Option("a", "s3", true,
             "Use s3 protocol (currently not working for import)");
         Option snapshotTtl = new Option("l", "snapshotTtl", true,
