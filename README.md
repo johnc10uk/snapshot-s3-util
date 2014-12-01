@@ -6,9 +6,9 @@ Version 2.0.1
 
 Added a copy-from option for export
 
-Added overwrite S3 files option
+Added overwrite S3 files option for export and import snapshot
 
-Added Bandwidth option ((v0.098.3 onwards)
+Added Bandwidth option ((v0.098.3 onwards). Default 200Mb/s.
 
 Test export to s3 and s3n storage
 
@@ -45,7 +45,7 @@ Output
 14/11/28 14:18:01 INFO backup.SnapshotS3Util: HDFS Path       : /hbase
 14/11/28 14:18:01 INFO backup.SnapshotS3Util: Snapshot From Url : hdfs://nameservice1/hbase
 14/11/28 14:18:01 INFO backup.SnapshotS3Util: Mappers         : 3
-14/11/28 14:18:01 INFO backup.SnapshotS3Util: Bandwidth       : unlimited
+14/11/28 14:18:01 INFO backup.SnapshotS3Util: Bandwidth       : 200
 14/11/28 14:18:01 INFO backup.SnapshotS3Util: S3 protocol     : s3n://
 14/11/28 14:18:01 INFO backup.SnapshotS3Util: HBase Snapshot TTL    : 0
 14/11/28 14:18:01 INFO backup.SnapshotS3Util: Overwrite S3 files  : false
@@ -93,9 +93,11 @@ Output
 14/08/28 15:48:58 INFO backup.SnapshotS3Util: S3 Path         : /hbase
 14/08/28 15:48:58 INFO backup.SnapshotS3Util: HDFS Path       : /hbase
 14/08/28 15:48:58 INFO backup.SnapshotS3Util: Snapshot From Url : hdfs://nameservice1/hbase
-14/08/28 15:48:58 INFO backup.SnapshotS3Util: Mappers         : 4
+14/08/28 15:48:58 INFO backup.SnapshotS3Util: Mappers         : 3
+14/08/28 15:48:58 INFO backup.SnapshotS3Util: Bandwidth       : 200
 14/08/28 15:48:58 INFO backup.SnapshotS3Util: s3 protocol     : s3n://
 14/08/28 15:48:58 INFO backup.SnapshotS3Util: Snapshot TTL    : 0
+14/08/28 15:48:58 INFO backup.SnapshotS3Util: Overwrite S3 files  : false
 14/08/28 15:48:58 INFO backup.SnapshotS3Util: --------------------------------------------------
 14/08/28 15:49:24 INFO snapshot.ExportSnapshot: Finalize the Snapshot Export
 14/08/28 15:49:24 INFO snapshot.ExportSnapshot: Verify snapshot integrity
@@ -133,7 +135,7 @@ Backup utility for creating snapshots and exporting/importing to and from S3
  -p,--s3Path <arg>            The snapshot directory in S3. Default is
                               '/hbase'
  -r,--bandwidth <arg>         The network bandwidth copying to/from S3 in
-                              Mb/s (v0.098.3 onwards). Default: unlimited
+                              Mb/s (v0.098.3 onwards). Default: 200
  -s,--awsAccessSecret <arg>   The AWS access secret string
  -t,--table <arg>             The table name to create a snapshot from.
                               Required for creating a snapshot
