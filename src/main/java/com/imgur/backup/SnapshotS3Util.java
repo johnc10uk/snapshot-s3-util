@@ -74,11 +74,11 @@ public class SnapshotS3Util extends Configured implements Tool
     private String bucketName   = null;
     private String s3Path       = "/hbase";
     private String s3protocol   = S3N_PROTOCOL;
-	/*
-	HBASE-11083 ExportSnapshot should provide capability to limit bandwidth consumption
-	Added to 0.98.3 May 2014
-	*/
-	private boolean LIMITBW		= true;
+    /*
+    HBASE-11083 ExportSnapshot should provide capability to limit bandwidth consumption
+    Added to 0.98.3 May 2014
+    */
+    private boolean LIMITBW		= true;
 	
     /**
      * Init and run job
@@ -194,10 +194,10 @@ public class SnapshotS3Util extends Configured implements Tool
         LOG.info("HDFS Path       : {}", hdfsPath);
         LOG.info("Snapshot From Url : {}", snapshotfromUrl);
         LOG.info("Mappers         : {}", mappers);
-		LOG.info("Bandwidth       : {}", bandwidth);
+        LOG.info("Bandwidth       : {}", bandwidth);
         LOG.info("S3 protocol     : {}", s3protocol);
         LOG.info("HBase Snapshot TTL    : {}", snapshotTtl);
-		if (overwrite == "") {
+        if (overwrite == "") {
 			LOG.info("Overwrite existing files  : {}", false);
 		} else {
 			LOG.info("Overwrite existing files  : {}", true);
@@ -311,8 +311,8 @@ public class SnapshotS3Util extends Configured implements Tool
 			} 
 
             // Override dfs configuration to point to S3 - THIS BREAKS IMPORT, COMMENTED OUT
-			//config.set("fs.default.name", s3protocol + accessKey + ":" + accessSecret + "@" + bucketName);
-			//config.set("fs.defaultFS", s3protocol + accessKey + ":" + accessSecret  + "@" + bucketName);
+            //config.set("fs.default.name", s3protocol + accessKey + ":" + accessSecret + "@" + bucketName);
+            //config.set("fs.defaultFS", s3protocol + accessKey + ":" + accessSecret  + "@" + bucketName);
             config.set("fs.s3.awsAccessKeyId", accessKey);
             config.set("fs.s3.awsSecretAccessKey", accessSecret);
             config.set("hbase.tmp.dir", "/tmp/hbase-${user.name}");
