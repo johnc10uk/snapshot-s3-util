@@ -4,7 +4,7 @@ Compiled against CDH 5.2.0 HBase 0.98.6 using YARN (MR2) November 2014
 
 Version 2.0.1
 
-Added a copy-from option for export
+Added a copy-from option for export. Default is hdfs://nameservice1/hbase or add own path e.g. "-f file:///opt/hbase"
 
 Added overwrite S3 files option for export and import snapshot
 
