@@ -4,21 +4,27 @@ Compiled against CDH 5.2.0 HBase 0.98.6 using YARN (MR2) November 2014
 
 Version 2.0.1
 
-Added a copy-from option for export. Default is hdfs://nameservice1/hbase or add own path e.g. "-f file:///opt/hbase"
+Added a copy-from option for export. 
+Default is hdfs://nameservice1/hbase or add own path e.g. for path /opt/hbase on a normal file system "-f file:///opt/hbase"
 
 Added overwrite S3 files option for export and import snapshot
 
-Added Bandwidth option ((v0.098.3 onwards). Default 200Mb/s.
+Added Bandwidth option (v0.098.3 onwards). Default 200Mb/s.
 
 Test export to s3 and s3n storage
 
-Import will currently only work from s3n, now default (5GB file size limit unless use multipart file feature which allows 5TB file sizes)
+Import will currently only work from s3n, now default 
+(5GB file size limit unless use multipart file feature which allows 5TB file sizes)
 
-Option to use fs.s3n.multipart.uploads.enabled to allow greater than 5GB HDFS files to S3n store (core-site.xml and jets3t.properties to increase threads from default of 2 to say 20)
+Option to use fs.s3n.multipart.uploads.enabled to allow greater than 5GB HDFS files to S3n store 
+(core-site.xml and jets3t.properties to increase threads from default of 2 to say 20)
 
-s3 import fails as using s3 directory /data/default and doesn't try /.tmp or /archive as seen earlier in debug output. Files are in /rootpath/archive/data/default and I cannot find how to override this setting. Error is java.io.IOException: No such file.
+s3 import fails as using s3 directory /data/default and doesn't try /.tmp or /archive as seen earlier in debug output. 
+Files are in /rootpath/archive/data/default and I cannot find how to override this setting. 
+Error is "java.io.IOException: No such file".
 
-Note: Backup of a large table will require a large amount of /tmp/hadoop-hdfs/s3/ space on the datanode (>10GB). Ensure all datanodes /tmp have sufficient free space or sym link /tmp/hadoop-hdfs to its own disc.
+Note: Backup of a large table will require a large amount of /tmp/hadoop-hdfs/s3/ space on the datanode (>10GB). 
+Ensure all datanodes /tmp have sufficient free space or sym link /tmp/hadoop-hdfs to its own disc.
 
 # Building
 ```
