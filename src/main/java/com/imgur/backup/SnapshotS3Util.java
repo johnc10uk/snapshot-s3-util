@@ -66,7 +66,7 @@ public class SnapshotS3Util extends Configured implements Tool
     private long mappers        = 1;
     private long bandwidth      = 200;
     private long snapshotTtl    = 0;
-    private String overwrite      = "";
+    private String overwrite    = "";
     
     // S3 options
     private String accessKey    = null;
@@ -78,8 +78,8 @@ public class SnapshotS3Util extends Configured implements Tool
     HBASE-11083 ExportSnapshot should provide capability to limit bandwidth consumption
     Added to 0.98.3 May 2014
     */
-    private boolean LIMITBW		= true;
-	
+    private boolean LIMITBW = true;
+    
     /**
      * Init and run job
      * @param args command line options
@@ -198,10 +198,10 @@ public class SnapshotS3Util extends Configured implements Tool
         LOG.info("S3 protocol     : {}", s3protocol);
         LOG.info("HBase Snapshot TTL    : {}", snapshotTtl);
         if (overwrite == "") {
-			LOG.info("Overwrite existing files  : {}", false);
-		} else {
-			LOG.info("Overwrite existing files  : {}", true);
-		}
+            LOG.info("Overwrite existing files  : {}", false);
+        } else {
+            LOG.info("Overwrite existing files  : {}", true);
+        }
         LOG.info("--------------------------------------------------");
     }
 
@@ -250,15 +250,15 @@ public class SnapshotS3Util extends Configured implements Tool
         args.add(snapshotfromUrl);
         args.add("-copy-to");
         args.add(url);
-		if (LIMITBW) {
-			args.add("-bandwidth");
-			args.add(Long.toString(bandwidth));
-		}
+        if (LIMITBW) {
+            args.add("-bandwidth");
+            args.add(Long.toString(bandwidth));
+        }
         args.add("-mappers");
         args.add(Long.toString(mappers));
-		if (overwrite != "") {
-			args.add("-overwrite");
-		}
+        if (overwrite != "") {
+            args.add("-overwrite");
+        }
         
         try {
             LOG.info("Destination: {}", url);
@@ -294,21 +294,21 @@ public class SnapshotS3Util extends Configured implements Tool
             }
             
             hdfsUrl = hdfsUrl + hdfsPath;
-	
-			List<String> args = new ArrayList<String>();
-			args.add("-snapshot");
-			args.add(snapshotName);
-			args.add("-copy-to");
-			args.add(hdfsUrl);
-			if (LIMITBW) {
-				args.add("-bandwidth");
-				args.add(Long.toString(bandwidth));
-			}
-			args.add("-mappers");
-			args.add(Long.toString(mappers));
-			if (overwrite != "") {
-				args.add("-overwrite");
-			} 
+    
+            List<String> args = new ArrayList<String>();
+            args.add("-snapshot");
+            args.add(snapshotName);
+            args.add("-copy-to");
+            args.add(hdfsUrl);
+            if (LIMITBW) {
+                args.add("-bandwidth");
+                args.add(Long.toString(bandwidth));
+            }
+            args.add("-mappers");
+            args.add(Long.toString(mappers));
+            if (overwrite != "") {
+                args.add("-overwrite");
+            } 
 
             // Override dfs configuration to point to S3 - THIS BREAKS IMPORT, COMMENTED OUT
             //config.set("fs.default.name", s3protocol + accessKey + ":" + accessSecret + "@" + bucketName);
