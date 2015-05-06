@@ -1,8 +1,8 @@
 # Updates to the CDH4 version for CDH5
 
-Compiled against CDH 5.2.0 HBase 0.98.6 using YARN (MR2) November 2014
+Compiled against CDH 5.3.5 HBase 0.98.6 using YARN (MR2) May 2015. Likely to work with 5.3.5+ with s3a support.
 
-Version 2.0.1
+Version 2.0.2-cdh5.3.5
 
 Added a copy-from option for export. 
 Default is hdfs://nameservice1/hbase or add own path e.g. for path /opt/hbase on a normal file system "-f file:///opt/hbase"
@@ -11,10 +11,12 @@ Added overwrite S3 files option for export and import snapshot
 
 Added Bandwidth option (v0.098.3 onwards). Default 200Mb/s.
 
-Test export to s3 and s3n storage
+Added s3a as default (CDH 5.3.0 HADOOP-10400. Uses native Amazon aws-sdk instead of jets3t)
 
-Import will currently only work from s3n, now default 
-(5GB file size limit unless use multipart file feature which allows 5TB file sizes)
+Tested export to s3, s3a and s3n storage.
+
+Import will currently only work from s3n and s3a.  S3a now default, >5GB file size 
+(s3n: 5GB file size limit unless use multipart file feature which allows 5TB file sizes)
 
 Option to use fs.s3n.multipart.uploads.enabled to allow greater than 5GB HDFS files to S3n store 
 (core-site.xml and jets3t.properties to increase threads from default of 2 to say 20)
@@ -36,7 +38,7 @@ mvn clean package
 To create a snapshot of table test1 and immediately export to S3n:// from a NameNode server. Number of mappers should be same as number of region servers.
 
 ```
-sudo -u hbase HADOOP_CLASSPATH=$(hbase classpath) hadoop jar target/snapshot-s3-util-2.0.1.jar com.imgur.backup.SnapshotS3Util --createExport --table test1 --awsAccessKey <accessKey> --awsAccessSecret <accessSecret> --bucketName hbasebucketname --mappers 3
+sudo -u hbase HADOOP_CLASSPATH=$(hbase classpath) hadoop jar target/snapshot-s3-util-2.0.2-cdh5.3.5.jar com.imgur.backup.SnapshotS3Util --createExport --table test1 --awsAccessKey <accessKey> --awsAccessSecret <accessSecret> --bucketName hbasebucketname --mappers 3
 ```
 Output
 ```
@@ -52,7 +54,7 @@ Output
 14/11/28 14:18:01 INFO backup.SnapshotS3Util: Snapshot From Url : hdfs://nameservice1/hbase
 14/11/28 14:18:01 INFO backup.SnapshotS3Util: Mappers         : 3
 14/11/28 14:18:01 INFO backup.SnapshotS3Util: Bandwidth       : 200
-14/11/28 14:18:01 INFO backup.SnapshotS3Util: S3 protocol     : s3n://
+14/11/28 14:18:01 INFO backup.SnapshotS3Util: S3 protocol     : s3a://
 14/11/28 14:18:01 INFO backup.SnapshotS3Util: HBase Snapshot TTL    : 0
 14/11/28 14:18:01 INFO backup.SnapshotS3Util: Overwrite S3 files  : false
 14/11/28 14:18:01 INFO backup.SnapshotS3Util: --------------------------------------------------
@@ -62,7 +64,7 @@ Output
 14/11/28 14:18:01 INFO backup.SnapshotS3Util: Complete
 
 ```
-Import from s3n:// table backup in to Hbase
+Import from s3a:// table backup in to Hbase
 
 ```
 hbase shell
@@ -76,7 +78,7 @@ sudo -u hdfs hadoop fs -chmod 777 /user
 
 Import snapshot from s3n store directory /hbase (-p) to HDFS /hbase (-d)
 
-sudo -u hbase HADOOP_CLASSPATH=$(hbase classpath) hadoop jar target/snapshot-s3-util-2.0.1.jar com.imgur.backup.SnapshotS3Util --import --snapshot test1-snapshot-20140828_154448 -d /hbase -p /hbase --awsAccessKey <accessKey> --awsAccessSecret <accessSecret> --bucketName <bucketName> --mappers <numMaps>
+sudo -u hbase HADOOP_CLASSPATH=$(hbase classpath) hadoop jar target/snapshot-s3-util-2.0.2-cdh5.3.5.jar com.imgur.backup.SnapshotS3Util --import --snapshot test1-snapshot-20140828_154448 -d /hbase -p /hbase --awsAccessKey <accessKey> --awsAccessSecret <accessSecret> --bucketName <bucketName> --mappers <numMaps>
 
 Confirm table can be restored
 
@@ -101,7 +103,7 @@ Output
 14/08/28 15:48:58 INFO backup.SnapshotS3Util: Snapshot From Url : hdfs://nameservice1/hbase
 14/08/28 15:48:58 INFO backup.SnapshotS3Util: Mappers         : 3
 14/08/28 15:48:58 INFO backup.SnapshotS3Util: Bandwidth       : 200
-14/08/28 15:48:58 INFO backup.SnapshotS3Util: s3 protocol     : s3n://
+14/08/28 15:48:58 INFO backup.SnapshotS3Util: s3 protocol     : s3a://
 14/08/28 15:48:58 INFO backup.SnapshotS3Util: Snapshot TTL    : 0
 14/08/28 15:48:58 INFO backup.SnapshotS3Util: Overwrite S3 files  : false
 14/08/28 15:48:58 INFO backup.SnapshotS3Util: --------------------------------------------------
@@ -119,7 +121,7 @@ usage: SnapshotS3Util [-a] -b <arg> -c | -e | -f <arg> | -i | -x [-d <arg>] -k <
        
 Backup utility for creating snapshots and exporting/importing to and from S3
 
- -a,--s3                      Use s3 protocol instead of s3n. Currently not
+ -a,--s3                      Use s3 protocol instead of s3a. Currently not
                               working for s3 import (file import path issue)                           
  -b,--bucketName <arg>        The S3 bucket name where snapshots are
                               stored
@@ -147,6 +149,7 @@ Backup utility for creating snapshots and exporting/importing to and from S3
                               Required for creating a snapshot
  -x,--createExport            Create HBase snapshot AND export to S3
  -w,--overwrite <arg>         Overwrite S3 files if already exist. Default is false
+ -y,--s3n                     Use s3n protocol instead of s3a.
 
 ```
 
@@ -155,44 +158,12 @@ Backup utility for creating snapshots and exporting/importing to and from S3
 ```
 <!-- Amazon S3 -->
 <property>
-  <name>fs.s3n.impl</name>
-  <value>org.apache.hadoop.fs.s3native.NativeS3FileSystem</value>
+  <name>fs.s3a.impl</name>
+  <value>org.apache.hadoop.fs.s3a.S3AFileSystem</value>
 </property>
 <property>
-  <name>fs.AbstractFileSystem.s3.impl</name>
-  <value>org.apache.hadoop.fs.s3.S3FileSystem</value>
-</property>
-<property>
-  <name>fs.AbstractFileSystem.s3n.impl</name>
-  <value>org.apache.hadoop.fs.s3native.NativeS3FileSystem</value>
-</property>
-<property>
-    <name>fs.s3n.multipart.uploads.enabled</name>
-    <value>true</value>
-</property>
-<property>
-    <name>fs.s3n.multipart.uploads.block.size</name>
-    <value>67108864</value>
-</property>
-<property>
-    <name>fs.s3n.multipart.copy.block.size</name>
-    <value>5368709120</value>
+  <name>fs.AbstractFileSystem.s3a.impl</name>
+  <value>org.apache.hadoop.fs.s3a.S3AFileSystem</value>
 </property>
 ```
 
-##Required jets3t.properties
-
-Create a ~/jets3t.properties file on the HBase gateway nodes (where you run this s3 util from)
-Copy to /etc/hadoop/conf
-
-```
-storage-service.internal-error-retry-max=5
-storage-service.disable-live-md5=false
-threaded-service.max-thread-count=20
-threaded-service.admin-max-thread-count=20
-s3service.max-thread-count=20
-s3service.admin-max-thread-count=20
-```
-
-Note this file will be removed from /etc/hadoop/conf when Cloudera deploy client config is run so will
-need to copy back before running the backup script
