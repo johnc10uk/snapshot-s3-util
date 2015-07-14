@@ -54,6 +54,7 @@ public class SnapshotS3Util extends Configured implements Tool
     private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyyMMdd_HHmmss");
     private static final String S3_PROTOCOL = "s3://";
     private static final String S3N_PROTOCOL = "s3n://";
+    private static final String S3A_PROTOCOL = "s3a://";
 
     private boolean createSnapshot = false;
     private boolean exportSnapshot = false;
@@ -73,7 +74,12 @@ public class SnapshotS3Util extends Configured implements Tool
     private String accessSecret = null;
     private String bucketName   = null;
     private String s3Path       = "/hbase";
-    private String s3protocol   = S3N_PROTOCOL;
+    /*
+    HBASE-10400 S3a support
+    Added to 0.98.6 May 2015
+    */
+    private String s3protocol   = S3A_PROTOCOL;
+
     /*
     HBASE-11083 ExportSnapshot should provide capability to limit bandwidth consumption
     Added to 0.98.3 May 2014
@@ -315,6 +321,8 @@ public class SnapshotS3Util extends Configured implements Tool
             //config.set("fs.defaultFS", s3protocol + accessKey + ":" + accessSecret  + "@" + bucketName);
             config.set("fs.s3.awsAccessKeyId", accessKey);
             config.set("fs.s3.awsSecretAccessKey", accessSecret);
+            config.set("fs.s3a.awsAccessKeyId", accessKey);
+            config.set("fs.s3a.awsSecretAccessKey", accessSecret);
             config.set("hbase.tmp.dir", "/tmp/hbase-${user.name}");
             config.set("hbase.rootdir", s3Url);
             
@@ -385,63 +393,66 @@ public class SnapshotS3Util extends Configured implements Tool
         
         for (Option option : cmd.getOptions()) {
             switch (option.getId()) {
+            case 'a':
+                s3protocol = S3_PROTOCOL;
+                break;
+            case 'b':
+                bucketName = option.getValue();
+                break;
             case 'c':
                 createSnapshot = true;
+                break;
+            case 'd':
+                hdfsPath = option.getValue();
+                break;
+            case 'e':
+                exportSnapshot = true;
+                break;
+            case 'f':
+                snapshotfromUrl = option.getValue();
+                break;
+            case 'i':
+                importSnapshot = true;
+                break;
+            case 'k':
+                accessKey = option.getValue();
+                break;
+            case 'l':
+                snapshotTtl = Long.parseLong(option.getValue());
+                break;
+            case 'm':
+                mappers = Long.parseLong(option.getValue());
+                break;
+            case 'n':
+                snapshotName = option.getValue();
+                break;
+            case 'p':
+                s3Path = option.getValue();
+                break;
+            case 'r':
+                bandwidth = Long.parseLong(option.getValue());
+                break;
+            case 's':
+                accessSecret = option.getValue();
+                break;
+            case 't':
+                tableName = option.getValue();
+                break;
+            case 'w':
+                overwrite = "-overwrite";
                 break;
             case 'x':
                 createSnapshot = true;
                 exportSnapshot = true;
                 break;
-            case 'e':
-                exportSnapshot = true;
-                break;
-            case 'i':
-                importSnapshot = true;
-                break;
-            case 't':
-                tableName = option.getValue();
-                break;
-            case 'n':
-                snapshotName = option.getValue();
-                break;
-            case 'k':
-                accessKey = option.getValue();
-                break;
-            case 's':
-                accessSecret = option.getValue();
-                break;
-            case 'b':
-                bucketName = option.getValue();
-                break;
-            case 'p':
-                s3Path = option.getValue();
-                break;
-            case 'd':
-                hdfsPath = option.getValue();
-                break;
-            case 'f':
-                snapshotfromUrl = option.getValue();
-                break;
-            case 'm':
-                mappers = Long.parseLong(option.getValue());
-                break;
-            case 'r':
-                bandwidth = Long.parseLong(option.getValue());
-                break;
-            case 'a':
-                s3protocol = S3_PROTOCOL;
-                break;
-            case 'l':
-                snapshotTtl = Long.parseLong(option.getValue());
-                break;
-            case 'w':
-                overwrite = "-overwrite";
+            case 'y':
+                s3protocol = S3N_PROTOCOL;
                 break;
             default:
                 throw new IllegalArgumentException("unexpected option " + option);
             }
         }
-        
+    
         if (createSnapshot && StringUtils.isEmpty(tableName)) {
             throw new IllegalArgumentException("Need a table name");
         }
@@ -486,7 +497,9 @@ public class SnapshotS3Util extends Configured implements Tool
         Option bandwidth = new Option("r", "bandwidth", true,
             "The network bandwidth copying to/from S3 in Mb/s (v0.098.3 onwards). Default: 200. Usage for 50Mb/s limit: -r 50");
         Option useS3 = new Option("a", "s3", true,
-            "Use s3 protocol (currently not working for import)");
+            "Use s3 protocol instead of s3a (currently not working for import)");
+        Option useS3n = new Option("y", "s3n", true,
+            "Use s3n protocol instead of s3a");
         Option snapshotTtl = new Option("l", "snapshotTtl", true,
             "Delete snapshots older than this value (seconds) from running HBase cluster");
         Option overwrite = new Option("w", "overwrite", true,
@@ -504,6 +517,7 @@ public class SnapshotS3Util extends Configured implements Tool
         mappers.setRequired(false);
         bandwidth.setRequired(false);
         useS3.setRequired(false);
+        useS3n.setRequired(false);
         snapshotTtl.setRequired(false);
         overwrite.setRequired(false);
                 
@@ -536,6 +550,7 @@ public class SnapshotS3Util extends Configured implements Tool
         options.addOption(mappers);
         options.addOption(bandwidth);
         options.addOption(useS3);
+        options.addOption(useS3n);
         options.addOption(snapshotTtl);
         options.addOption(overwrite);
         
